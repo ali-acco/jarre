@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>جرعه — جمله‌های سنگین</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+<style>
+:root{
+  --bg:#0a0a0a; --card:rgba(255,255,255,.06); --border:rgba(255,255,255,.12);
+  --text:#f5f5f5; --muted:#9ca3af;
+  --accent1:#ec4899; --accent2:#f97316; --accent3:#9333ea; --accent4:#06b6d4;
+  --grad-main:linear-gradient(135deg,#ec4899,#f97316);
+  --grad-blue:linear-gradient(135deg,#06b6d4,#3b82f6);
+  --grad-purple:linear-gradient(135deg,#9333ea,#ec4899);
+  --grad-green:linear-gradient(135deg,#10b981,#06b6d4);
+  --grad-red:linear-gradient(135deg,#f97316,#ef4444);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:'Vazirmatn',Tahoma,sans-serif;
+  background:var(--bg); color:var(--text);
+  font-size:16px; line-height:1.8;
+  display:flex; flex-direction:column;
+}
+
+/* ===== Header ===== */
+.header{
+  padding:14px 16px 10px;
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px; flex-shrink:0;
+  background:linear-gradient(180deg,rgba(10,10,10,.95),transparent);
+  z-index:10; position:relative;
+}
+.logo{
+  font-size:22px; font-weight:900;
+  background:var(--grad-main);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  letter-spacing:-.5px;
+}
+.logo-sub{font-size:10px; color:var(--muted); font-weight:400; letter-spacing:1px}
+.cat-tabs{
+  display:flex; gap:6px; overflow-x:auto; padding:4px 0;
+  scrollbar-width:none; -webkit-overflow-scrolling:touch;
+}
+.cat-tabs::-webkit-scrollbar{display:none}
+.cat-btn{
+  padding:6px 14px; border-radius:99px; font-size:12px; font-weight:600;
+  background:var(--card); color:var(--muted); border:1px solid var(--border);
+  white-space:nowrap; cursor:pointer; font-family:inherit;
+  transition:all .25s;
+}
+.cat-btn.active{
+  background:var(--grad-main); color:#0a0a0a; border-color:transparent;
+  box-shadow:0 4px 14px rgba(236,72,153,.3);
+}
+
+/* ===== Progress Bars ===== */
+.progress-row{
+  display:flex; gap:4px; padding:0 16px 8px; flex-shrink:0;
+}
+.p-seg{
+  flex:1; height:3px; background:rgba(255,255,255,.12);
+  border-radius:99px; overflow:hidden;
+}
+.p-fill{
+  height:100%; width:0%;
+  background:var(--grad-main);
+  border-radius:99px;
+  transform-origin:right;
+}
+.p-fill.done{width:100%}
+.p-fill.active{animation:grow var(--dur,6s) linear forwards}
+@keyframes grow{from{width:0%}to{width:100%}}
+
+/* ===== Slide Stage ===== */
+.stage{
+  flex:1; position:relative; overflow:hidden;
+  touch-action:pan-y;
+}
+.slide{
+  position:absolute; inset:0;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding:24px 28px 100px;
+  text-align:center;
+  opacity:0; transition:opacity .45s ease;
+  pointer-events:none;
+}
+.slide.on{opacity:1; pointer-events:auto}
+.slide-bg{
+  position:absolute; inset:0; z-index:-1;
+  opacity:.35; filter:blur(80px);
+  transition:all .6s;
+}
+.slide[data-cat="شخصی"] .slide-bg{background:radial-gradient(circle at 30% 30%,#ec4899,transparent 70%)}
+.slide[data-cat="کاری"] .slide-bg{background:radial-gradient(circle at 70% 40%,#3b82f6,transparent 70%)}
+.slide[data-cat="رفاقت"] .slide-bg{background:radial-gradient(circle at 40% 70%,#10b981,transparent 70%)}
+.slide[data-cat="جامعه"] .slide-bg{background:radial-gradient(circle at 60% 30%,#f97316,transparent 70%)}
+.slide[data-cat="عمیق"] .slide-bg{background:radial-gradient(circle at 50% 50%,#9333ea,transparent 70%)}
+
+.cat-chip{
+  font-size:10px; font-weight:700; padding:4px 12px;
+  border-radius:99px; margin-bottom:20px;
+  background:var(--card); border:1px solid var(--border);
+  backdrop-filter:blur(10px);
+  color:var(--muted);
+}
+.slide-text{
+  font-size:clamp(19px,5.4vw,30px);
+  font-weight:800; line-height:1.65;
+  letter-spacing:-.3px;
+  max-width:340px;
+  background:linear-gradient(180deg,#fff,#d1d5db);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  text-wrap:balance;
+  margin-bottom:16px;
+}
+.slide-sub{
+  font-size:12.5px; color:var(--muted);
+  max-width:300px; line-height:1.7;
+}
+.slide-num{
+  position:absolute; bottom:90px; left:50%; transform:translateX(-50%);
+  font-size:11px; color:rgba(255,255,255,.3);
+  letter-spacing:2px; font-variant-numeric:tabular-nums;
+}
+
+/* ===== Tap Zones ===== */
+.tap-zone{
+  position:absolute; top:0; bottom:0; width:40%; z-index:5;
+  cursor:pointer; background:transparent; border:none;
+}
+.tap-prev{left:0}
+.tap-next{right:0}
+
+/* ===== Bottom Actions ===== */
+.bottom{
+  position:absolute; bottom:0; left:0; right:0;
+  padding:14px 20px calc(14px + env(safe-area-inset-bottom));
+  display:flex; align-items:center; justify-content:space-between;
+  gap:10px;
+  background:linear-gradient(0deg,rgba(10,10,10,.98),transparent);
+  z-index:8;
+}
+.action-btn{
+  display:flex; flex-direction:column; align-items:center; gap:3px;
+  background:none; border:none; color:var(--muted);
+  font-family:inherit; font-size:10px; cursor:pointer;
+  padding:6px 10px; border-radius:12px;
+  transition:all .2s;
+}
+.action-btn svg{width:24px;height:24px;transition:all .25s}
+.action-btn:hover,.action-btn:active{color:var(--text)}
+.action-btn.liked{color:#ec4899}
+.action-btn.liked svg{animation:pop .4s}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.35)}100%{transform:scale(1)}}
+.action-btn:active{background:rgba(255,255,255,.05)}
+
+.middle-hint{
+  font-size:11px; color:rgba(255,255,255,.25);
+  text-align:center; flex:1;
+}
+
+/* ===== Toast ===== */
+.toast{
+  position:fixed; bottom:100px; left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:rgba(236,72,153,.95); color:#fff;
+  padding:10px 20px; border-radius:12px;
+  font-size:12.5px; font-weight:600;
+  opacity:0; pointer-events:none;
+  transition:all .3s; z-index:200;
+  max-width:85%; text-align:center;
+  box-shadow:0 8px 24px rgba(0,0,0,.4);
+}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+
+/* ===== Empty / Loading ===== */
+.center-msg{
+  position:absolute; inset:0; display:flex;
+  align-items:center; justify-content:center;
+  flex-direction:column; gap:16px;
+  color:var(--muted); font-size:14px; text-align:center;
+  padding:40px;
+}
+.spinner{
+  width:36px;height:36px;border:3px solid rgba(236,72,153,.2);
+  border-top-color:#ec4899;border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(min-width:500px){
+  .slide-text{font-size:28px}
+  .stage{max-width:500px;margin:0 auto;width:100%}
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div>
+    <div class="logo">جرعه</div>
+    <div class="logo-sub">جمله‌هایی که می‌مانند</div>
+  </div>
+  <div style="font-size:11px;color:var(--muted);text-align:left;line-height:1.5">
+    <div id="todayDate"></div>
+    <div id="counter">۰ / ۰</div>
+  </div>
+</header>
+
+<!-- Category Tabs -->
+<div class="cat-tabs" id="catTabs" style="padding:0 16px 10px"></div>
+
+<!-- Progress -->
+<div class="progress-row" id="progressRow"></div>
+
+<!-- Stage -->
+<div class="stage" id="stage">
+  <div class="center-msg" id="centerMsg">
+    <div class="spinner"></div>
+    در حال بارگذاری...
+  </div>
+</div>
+
+<!-- Bottom Actions -->
+<div class="bottom" id="bottomBar" style="display:none">
+  <button class="action-btn" id="likeBtn" onclick="toggleLike()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    <span>لایک</span>
+  </button>
+  <button class="action-btn" onclick="shareSlide()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+    <span>ارسال</span>
+  </button>
+  <button class="action-btn" onclick="copyText()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    <span>کپی</span>
+  </button>
+  <button class="action-btn" onclick="saveSlide()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    <span>ذخیره</span>
+  </button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+//  داده‌ها — جمله‌های سنگین و تأمل‌برانگیز
+//  هر جمله را می‌توانی عوض یا اضافه کنی
+// ============================================================
+const ALL_SLIDES = [
+  // ===== شخصی =====
+  {cat:'شخصی', text:'تنها چیزی که وقتی همه‌چیز را از دست می‌دهی برایت می‌ماند، کسی است که وقتی داشت، دستت را نگه داشت — نه کسی که وقتی نداشتی، رهایت کرد.'},
+  {cat:'شخصی', text:'گاهی بزرگ‌ترین شجاعت این نیست که بمانی؛ این است که بپذیری بعضی درها را باید خودت ببندی تا راه برای درهای دیگر باز شود.'},
+  {cat:'شخصی', text:'آن‌قدر به «بعداً» عادت کرده‌ایم که یادمان رفته «حالا» تنها زمانی است که واقعاً داریمش.'},
+  {cat:'شخصی', text:'آدم‌ها را با لحظه‌های خوبشان قضاوت نکن؛ با کاری که در لحظه‌های سخت انجام می‌دهند بشناس.'},
+  {cat:'شخصی', text:'شاید بزرگ‌ترین درس زندگی این باشد: بعضی آدم‌ها «خانه» نیستند، «ایستگاه» هستند. قرار نیست بمانند؛ قرار است تو را به جایی برسانند.'},
+  // ===== کاری =====
+  {cat:'کاری', text:'در محیط کار، کسی که همیشه «بله» می‌گوید، به‌زودی یاد می‌گیرد که ارزش «نه» را هیچ‌وقت نخواهد فهمید.'},
+  {cat:'کاری', text:'حرفه‌ای‌گری یعنی وقتی کسی پشت سرت نیست، همان‌طور کار کنی که وقتی همه نگاه می‌کنند.'},
+  {cat:'کاری', text:'بزرگ‌ترین اشتباه در کار، اشتباه نکردن نیست؛ تکرار نکردن اشتباهی است که یک بار فهمیدی.'},
+  {cat:'کاری', text:'همیشه یادت باشد: در جلسه، سکوتِ کسی که می‌داند، از بلندترین صدای کسی که نمی‌داند، سنگین‌تر است.'},
+  {cat:'کاری', text:'موفقیت در کار، بیشتر از آنکه به استعداد بستگی داشته باشد، به توانایی «ادامه دادن وقتی خسته‌ای» بستگی دارد.'},
+  // ===== رفاقت =====
+  {cat:'رفاقت', text:'رفیق کسی نیست که وقتی خوشحالی کنارت است؛ رفیق کسی است که وقتی داری می‌شکنی، بدون اینکه بپرسد چرا، کنارت می‌ماند.'},
+  {cat:'رفاقت', text:'بعضی دوستی‌ها مثل باران‌اند: نمی‌بینی از کجا می‌آیند، ولی وقتی می‌بارند، همه‌چیز را تازه می‌کنند.'},
+  {cat:'رفاقت', text:'آدم‌ها را در سختی بشناس؛ چون در راحتی، همه بلدند چطور «رفیق» باشند.'},
+  {cat:'رفاقت', text:'رفاقت واقعی یعنی بتوانی ساکت بنشینی و هیچ‌کس احساس نکند باید چیزی بگوید.'},
+  {cat:'رفاقت', text:'هیچ‌وقت رفاقت را با «رفاقتِ مصلحتی» اشتباه نگیر. اولی در نبودت هم هست؛ دومی فقط در حضور تو.'},
+  // ===== جامعه =====
+  {cat:'جامعه', text:'جامعه‌ای که در آن سکوت، امن‌ترین راه باشد، به‌زودی صداهای واقعی‌اش را از دست می‌دهد.'},
+  {cat:'جامعه', text:'ما اغلب فکر می‌کنیم تغییر از بالا می‌آید؛ اما تاریخ نشان داده که تغییر همیشه از «یک نفر که دیگر نتوانست سکوت کند» شروع شده است.'},
+  {cat:'جامعه', text:'قضاوت کردن درباره دیگران، آسان‌ترین کار دنیاست؛ اما فهمیدن آن‌ها، شجاعانه‌ترین.'},
+  {cat:'جامعه', text:'گاهی بزرگ‌ترین مشکل جامعه این نیست که آدم‌های بد زیادند؛ این است که آدم‌های خوب ساکت‌اند.'},
+  {cat:'جامعه', text:'قانون وقتی معنا دارد که برای همه یکسان باشد؛ وگرنه فقط یک «توصیه» است.'},
+  // ===== عمیق =====
+  {cat:'عمیق', text:'زندگی کوتاه نیست؛ ما آن را کوتاه می‌کنیم. با ترسیدن از چیزهایی که هرگز اتفاق نمی‌افتند.'},
+  {cat:'عمیق', text:'شاید معنی زندگی این نباشد که «پیدایش کنی»؛ این باشد که «چیزی را که فقط تو می‌توانی، به دنیا اضافه کنی».'},
+  {cat:'عمیق', text:'زمان همه زخم‌ها را درمان نمی‌کند. فقط به ما یاد می‌دهد که چطور با آن‌ها زندگی کنیم.'},
+  {cat:'عمیق', text:'تنها وقتی می‌فهمی چیزی را واقعاً می‌خواهی که حاضر باشی برایش چیزی را از دست بدهی.'},
+  {cat:'عمیق', text:'ما در دنیایی زندگی می‌کنیم که آدم‌ها بیشتر از اینکه «شنیده شوند»، «دیده می‌شوند». و همین تفاوت، خیلی چیزها را خراب می‌کند.'},
+  {cat:'عمیق', text:'گاهی سکوت، جواب نیست؛ احترام به این است که حرفی برای گفتن نمانده.'},
+];
+
+// ============================================================
+//  State
+// ============================================================
+const CATS = ['همه','شخصی','کاری','رفاقت','جامعه','عمیق'];
+let currentCat = 'همه';
+let slides = [];        // اسلایدهای فیلترشده
+let idx = 0;            // اسلاید فعال
+let likes = JSON.parse(localStorage.getItem('jarre_likes') || '{}');
+let saved = JSON.parse(localStorage.getItem('jarre_saved') || '{}');
+let paused = false;
+let touchStartY = 0;
+
+const el = {
+  stage: document.getElementById('stage'),
+  prog: document.getElementById('progressRow'),
+  tabs: document.getElementById('catTabs'),
+  bottom: document.getElementById('bottomBar'),
+  likeBtn: document.getElementById('likeBtn'),
+  counter: document.getElementById('counter'),
+  date: document.getElementById('todayDate'),
+  toast: document.getElementById('toast'),
+  centerMsg: document.getElementById('centerMsg'),
+};
+
+// ============================================================
+//  تاریخ
+// ============================================================
+(function(){
+  try {
+    const d = new Date();
+    const fa = d.toLocaleDateString('fa-IR',{weekday:'long',day:'numeric',month:'long'});
+    el.date.textContent = fa;
+  } catch(e){}
+})();
+
+// ============================================================
+//  Tabs
+// ============================================================
+CATS.forEach(c => {
+  const b = document.createElement('button');
+  b.className = 'cat-btn' + (c === currentCat ? ' active' : '');
+  b.textContent = c;
+  b.onclick = () => switchCat(c);
+  el.tabs.appendChild(b);
+});
+
+function switchCat(c){
+  currentCat = c;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b.textContent === c));
+  buildSlides();
+  render();
+}
+
+function buildSlides(){
+  slides = ALL_SLIDES.filter(s => currentCat === 'همه' || s.cat === currentCat);
+  idx = 0;
+}
+
+// ============================================================
+//  Render
+// ============================================================
+function render(){
+  if (!slides.length){ el.centerMsg.style.display='flex'; el.bottom.style.display='none'; return; }
+  el.centerMsg.style.display='none';
+  el.bottom.style.display='flex';
+
+  // پاک کردن قبلی
+  el.stage.innerHTML = '';
+  el.prog.innerHTML = '';
+
+  slides.forEach((s, i) => {
+    // progress
+    const seg = document.createElement('div');
+    seg.className = 'p-seg';
+    const fill = document.createElement('div');
+    fill.className = 'p-fill';
+    seg.appendChild(fill);
+    el.prog.appendChild(seg);
+
+    // slide
+    const d = document.createElement('div');
+    d.className = 'slide' + (i === idx ? ' on' : '');
+    d.dataset.cat = s.cat;
+    d.innerHTML = `
+      <div class="slide-bg"></div>
+      <div class="cat-chip">${s.cat}</div>
+      <div class="slide-text">${s.text}</div>
+      <div class="slide-sub">${s.sub || ''}</div>
+      <div class="slide-num">${toFa(i+1)} / ${toFa(slides.length)}</div>
+    `;
+    el.stage.appendChild(d);
+  });
+
+  // tap zones
+  const prevZ = document.createElement('button');
+  prevZ.className = 'tap-zone tap-prev';
+  prevZ.setAttribute('aria-label','قبلی');
+  prevZ.onclick = () => go(idx - 1);
+  el.stage.appendChild(prevZ);
+
+  const nextZ = document.createElement('button');
+  nextZ.className = 'tap-zone tap-next';
+  nextZ.setAttribute('aria-label','بعدی');
+  nextZ.onclick = () => go(idx + 1);
+  el.stage.appendChild(nextZ);
+
+  updateLikeBtn();
+  el.counter.textContent = toFa(idx + 1) + ' / ' + toFa(slides.length);
+  startProgress();
+}
+
+// ============================================================
+//  Progress
+// ============================================================
+function startProgress(){
+  const fills = el.prog.querySelectorAll('.p-fill');
+  fills.forEach((f, i) => {
+    f.classList.remove('active','done');
+    f.style.width = i < idx ? '100%' : (i === idx ? '0%' : '0%');
+    if (i < idx) f.classList.add('done');
+  });
+  const cur = fills[idx];
+  if (!cur) return;
+  cur.style.setProperty('--dur', '6s');
+  cur.classList.add('active');
+  cur.onanimationend = () => { if (!paused) go(idx + 1); };
+}
+
+function pauseProgress(){ paused = true; const a = el.prog.querySelector('.p-fill.active'); if (a) a.style.animationPlayState='paused'; }
+function resumeProgress(){ paused = false; const a = el.prog.querySelector('.p-fill.active'); if (a) a.style.animationPlayState='running'; }
+
+// ============================================================
+//  Navigation
+// ============================================================
+function go(n){
+  if (n < 0) n = 0;
+  if (n >= slides.length) n = slides.length - 1;
+  idx = n;
+  // slides
+  document.querySelectorAll('.slide').forEach((s, i) => s.classList.toggle('on', i === idx));
+  // progress
+  const fills = el.prog.querySelectorAll('.p-fill');
+  fills.forEach((f, i) => {
+    f.classList.remove('active','done');
+    f.style.width = i < idx ? '100%' : '0%';
+    if (i < idx) f.classList.add('done');
+  });
+  const cur = fills[idx];
+  if (cur){ cur.style.setProperty('--dur','6s'); cur.classList.add('active'); cur.onanimationend = () => { if (!paused) go(idx + 1); }; }
+  updateLikeBtn();
+  el.counter.textContent = toFa(idx + 1) + ' / ' + toFa(slides.length);
+  // pause on manual navigation for a moment
+  paused = true;
+  setTimeout(() => { paused = false; }, 200);
+}
+
+// ============================================================
+//  Like / Save / Share / Copy
+// ============================================================
+function keyOfSlide(){ const s = slides[idx]; return s ? s.cat + '::' + s.text.slice(0,30) : ''; }
+
+function toggleLike(){
+  const k = keyOfSlide(); if (!k) return;
+  likes[k] = !likes[k];
+  localStorage.setItem('jarre_likes', JSON.stringify(likes));
+  updateLikeBtn();
+  toast(likes[k] ? '❤️ ذخیره شد در لایک‌ها' : 'از لایک‌ها حذف شد');
+}
+
+function updateLikeBtn(){
+  const k = keyOfSlide();
+  const on = likes[k];
+  el.likeBtn.classList.toggle('liked', !!on);
+  el.likeBtn.querySelector('svg').setAttribute('fill', on ? 'currentColor' : 'none');
+}
+
+function saveSlide(){
+  const s = slides[idx]; if (!s) return;
+  const k = keyOfSlide();
+  saved[k] = {cat:s.cat, text:s.text, date:new Date().toISOString()};
+  localStorage.setItem('jarre_saved', JSON.stringify(saved));
+  toast('📌 در ذخیره‌ها نگه داشته شد');
+}
+
+function copyText(){
+  const s = slides[idx]; if (!s) return;
+  const t = `«${s.text}»\n\n— جرعه | ${s.cat}`;
+  if (navigator.clipboard){ navigator.clipboard.writeText(t).then(()=>toast('📋 کپی شد')).catch(()=>fallbackCopy(t)); }
+  else fallbackCopy(t);
+}
+function fallbackCopy(t){
+  const ta = document.createElement('textarea'); ta.value=t; document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); toast('📋 کپی شد'); }catch(e){ toast('کپی نشد'); }
+  document.body.removeChild(ta);
+}
+
+async function shareSlide(){
+  const s = slides[idx]; if (!s) return;
+  const t = `«${s.text}»\n\n— جرعه | ${s.cat}`;
+  if (navigator.share){
+    try { await navigator.share({title:'جرعه', text:t}); } catch(e){}
+  } else { copyText(); toast('متن کپی شد — حالا در هر جا بچسبان'); }
+}
+
+// ============================================================
+//  Toast
+// ============================================================
+function toast(m){
+  el.toast.textContent = m;
+  el.toast.classList.add('show');
+  clearTimeout(el.toast._tid);
+  el.toast._tid = setTimeout(() => el.toast.classList.remove('show'), 2800);
+}
+
+// ============================================================
+//  Touch: swipe up / down + hold to pause
+// ============================================================
+el.stage.addEventListener('touchstart', e => {
+  touchStartY = e.touches[0].clientY;
+  pauseProgress();
+}, {passive:true});
+el.stage.addEventListener('touchend', e => {
+  const dy = e.changedTouches[0].clientY - touchStartY;
+  if (Math.abs(dy) > 40){
+    if (dy < 0) go(idx + 1); // swipe up
+    else go(idx - 1);        // swipe down
+  } else {
+    resumeProgress();
+  }
+}, {passive:true});
+
+// دسکتاپ: hold با ماوس
+el.stage.addEventListener('mousedown', pauseProgress);
+el.stage.addEventListener('mouseup', resumeProgress);
+el.stage.addEventListener('mouseleave', resumeProgress);
+
+// کیبورد
+document.addEventListener('keydown', e => {
+  if (e.code === 'ArrowRight') go(idx + 1);
+  if (e.code === 'ArrowLeft') go(idx - 1);
+});
+
+// ============================================================
+//  Helpers
+// ============================================================
+function toFa(n){ return String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
+
+// ============================================================
+//  Start
+// ============================================================
+buildSlides();
+render();
+</script>
+</body>
+</html>
