@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#050510">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>جرعه</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<style>
+:root{--bg:#050510;--text:#fafafa;--muted:#8b8b95;--glass:rgba(255,255,255,.06);--border:rgba(255,255,255,.1);--pink:#ec4899;--orange:#f97316;--purple:#a855f7;--blue:#3b82f6;--c1:var(--pink);--c2:var(--orange)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{height:100dvh;overflow:hidden}
+body{font-family:'Vazirmatn',Tahoma,sans-serif;background:var(--bg);color:var(--text);font-size:16px;line-height:1.8;display:flex;flex-direction:column;position:relative}
+.mesh{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.mesh::before,.mesh::after{content:'';position:absolute;border-radius:50%;filter:blur(90px);opacity:.4}
+.mesh::before{width:65vw;height:65vw;background:linear-gradient(135deg,var(--c1),var(--c2));top:-20vw;right:-20vw;animation:float1 18s ease-in-out infinite}
+.mesh::after{width:55vw;height:55vw;background:linear-gradient(135deg,var(--purple),var(--blue));bottom:-20vw;left:-15vw;animation:float2 22s ease-in-out infinite}
+@keyframes float1{0%,100%{transform:translate(0,0) rotate(0)}50%{transform:translate(-8vw,10vh) rotate(30deg)}}
+@keyframes float2{0%,100%{transform:translate(0,0) rotate(0)}50%{transform:translate(6vw,-8vh) rotate(-20deg)}}
+.particles{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.particle{position:absolute;width:2px;height:2px;background:rgba(255,255,255,.6);border-radius:50%;animation:rise 12s linear infinite}
+@keyframes rise{0%{transform:translateY(100vh) scale(0);opacity:0}10%{opacity:.6}90%{opacity:.3}100%{transform:translateY(-10vh) scale(1);opacity:0}}
+.header{position:relative;z-index:10;padding:12px 14px 8px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-shrink:0}
+.brand{display:flex;align-items:center;gap:9px}
+.brand-icon{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--pink),var(--orange));display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 6px 20px rgba(236,72,153,.45)}
+.brand-txt{display:flex;flex-direction:column;line-height:1.15}
+.brand-title{font-size:17px;font-weight:900;background:linear-gradient(90deg,#fff,var(--pink),var(--orange),#fff);background-size:250% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:slide 5s linear infinite}
+@keyframes slide{to{background-position:250% center}}
+.brand-sub{font-size:9px;color:var(--muted)}
+.hbtns{display:flex;gap:5px}
+.hbtn{background:var(--glass);border:1px solid var(--border);color:var(--text);width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s}
+.hbtn:active{transform:scale(.95)}
+.hbtn svg{width:17px;height:17px}
+.cat-strip{position:relative;z-index:10;display:flex;gap:5px;overflow-x:auto;padding:4px 14px 8px;scrollbar-width:none;flex-shrink:0}
+.cat-strip::-webkit-scrollbar{display:none}
+.cat-pill{padding:5px 12px;border-radius:99px;font-size:11.5px;font-weight:600;background:var(--glass);color:var(--muted);border:1px solid var(--border);white-space:nowrap;cursor:pointer;font-family:inherit;transition:all .25s;display:flex;align-items:center;gap:4px}
+.cat-pill.active{color:#fff;border-color:transparent;background:linear-gradient(135deg,var(--c1),var(--c2))}
+.progress-row{display:flex;gap:3px;padding:0 14px 8px;flex-shrink:0;position:relative;z-index:10}
+.p-seg{flex:1;height:2px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}
+.p-fill{height:100%;width:0;background:linear-gradient(90deg,var(--c1),var(--c2));border-radius:99px;transition:width .4s}
+.p-fill.done{width:100%}
+.p-fill.cur{width:100%}
+.mode-bar{display:flex;gap:6px;padding:0 14px 8px;flex-shrink:0;position:relative;z-index:10;justify-content:center}
+.mode-btn{flex:1;max-width:160px;background:var(--glass);border:1px solid var(--border);color:var(--muted);padding:7px 10px;border-radius:10px;font-family:inherit;font-size:11.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:5px;cursor:pointer;transition:all .25s}
+.mode-btn:active{transform:scale(.97)}
+.mode-btn.on{color:#fff;border-color:transparent;background:linear-gradient(135deg,var(--pink),var(--orange))}
+.mode-btn svg{width:14px;height:14px}
+.stage{flex:1;position:relative;overflow:hidden;z-index:5;touch-action:pan-y;min-height:0}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 26px 110px;text-align:center;opacity:0;transition:opacity .4s, transform .4s;transform:scale(.96);pointer-events:none}
+.slide.on{opacity:1;transform:scale(1);pointer-events:auto}
+.slide-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:85%;height:65%;border-radius:50%;filter:blur(70px);opacity:.45;z-index:0;background:linear-gradient(135deg,var(--c1),var(--c2))}
+.slide-inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;max-width:370px}
+.cat-chip{font-size:10px;font-weight:800;padding:5px 14px;border-radius:99px;margin-bottom:18px;letter-spacing:.5px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;gap:5px}
+.slide-text{font-size:clamp(19px,5.3vw,29px);font-weight:800;line-height:1.6;letter-spacing:-.3px;text-wrap:balance;background:linear-gradient(135deg,#fff 0%,#e0e0e8 40%,#fff 60%,#e0e0e8 100%);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:holographic 6s linear infinite}
+@keyframes holographic{to{background-position:200% center}}
+.slide[data-cat="طنز"] .slide-text{font-size:clamp(17px,4.8vw,24px);line-height:1.7}
+.slide-num{position:absolute;bottom:90px;left:50%;transform:translateX(-50%);font-size:10px;color:rgba(255,255,255,.22);letter-spacing:2.5px;z-index:2}
+.watermark{position:absolute;bottom:66px;left:50%;transform:translateX(-50%);font-size:9px;color:rgba(255,255,255,.12);letter-spacing:4px;font-weight:600;z-index:2}
+.tap-zone{position:absolute;top:0;bottom:0;width:40%;z-index:6;cursor:pointer;background:transparent;border:none}
+.tap-prev{left:0}.tap-next{right:0}
+.bottom{position:absolute;bottom:0;left:0;right:0;padding:12px 12px calc(12px + env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:space-around;gap:2px;background:linear-gradient(0deg,rgba(5,5,16,.98) 50%,transparent);z-index:9}
+.action-btn{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:var(--muted);font-family:inherit;font-size:9.5px;cursor:pointer;padding:6px 4px;border-radius:10px;transition:all .2s;min-width:50px}
+.action-btn svg{width:21px;height:21px;stroke-width:1.8}
+.action-btn:active{background:rgba(255,255,255,.06);transform:scale(.95)}
+.action-btn.liked{color:var(--pink)}
+.action-btn.liked svg{fill:currentColor}
+.modal{position:fixed;inset:0;z-index:100;background:rgba(5,5,16,.85);backdrop-filter:blur(24px);display:none;align-items:center;justify-content:center;padding:20px}
+.modal.show{display:flex}
+.modal-content{background:linear-gradient(180deg,rgba(30,30,45,.98),rgba(15,15,25,.98));border:1px solid var(--border);border-radius:20px;width:100%;max-width:440px;max-height:82vh;display:flex;flex-direction:column;overflow:hidden}
+.modal-header{padding:16px 18px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:15px;font-weight:700;background:linear-gradient(90deg,var(--pink),var(--orange));-webkit-background-clip:text;background-clip:text;color:transparent}
+.modal-close{background:none;border:none;color:var(--muted);cursor:pointer;padding:2px}
+.modal-close svg{width:20px;height:20px}
+.modal-body{padding:12px 18px;overflow-y:auto;flex:1}
+.priority-row{display:flex;align-items:center;gap:8px;padding:9px 10px;background:rgba(255,255,255,.03);border-radius:11px;margin-bottom:6px}
+.priority-row.off{opacity:.4}
+.pr-emoji{font-size:18px;width:24px;text-align:center}
+.pr-name{flex:1;font-size:13px;font-weight:600}
+.pr-toggle{width:38px;height:22px;border-radius:99px;background:rgba(255,255,255,.1);border:none;position:relative;cursor:pointer;flex-shrink:0}
+.pr-toggle::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:left .3s}
+.pr-toggle.on{background:linear-gradient(135deg,var(--pink),var(--orange))}
+.pr-toggle.on::after{left:19px}
+.pr-arrows{display:flex;gap:2px}
+.pr-arrow{background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text);width:24px;height:24px;border-radius:6px;cursor:pointer;font-size:10px}
+.modal-footer{padding:12px 18px;border-top:1px solid var(--border);display:flex;gap:8px}
+.btn-primary{flex:1;background:linear-gradient(135deg,var(--pink),var(--orange));border:none;color:#fff;padding:10px;border-radius:11px;font-family:inherit;font-size:13.5px;font-weight:700;cursor:pointer}
+.btn-secondary{flex:1;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:11px;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer}
+.toast{position:fixed;bottom:110px;left:50%;transform:translateX(-50%) translateY(20px);background:linear-gradient(135deg,var(--pink),var(--orange));color:#fff;padding:10px 18px;border-radius:11px;font-size:12px;font-weight:600;opacity:0;pointer-events:none;transition:all .3s;z-index:200;max-width:85%;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<div class="mesh"></div>
+<div class="particles" id="particles"></div>
+
+<header class="header">
+  <div class="brand">
+    <div class="brand-icon">💎</div>
+    <div class="brand-txt">
+      <div class="brand-title">جرعه</div>
+      <div class="brand-sub">جمله‌هایی که می‌مانند</div>
+    </div>
+  </div>
+  <div class="hbtns">
+    <button class="hbtn" id="fullBtn" onclick="toggleFullscreen()" title="تمام‌صفحه">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+    </button>
+    <button class="hbtn" onclick="openSettings()" title="تنظیمات">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="cat-strip" id="catStrip"></div>
+<div class="progress-row" id="progressRow"></div>
+
+<div class="mode-bar">
+  <button class="mode-btn" id="shuffleBtn" onclick="toggleShuffle()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+    درهم
+  </button>
+  <button class="mode-btn" id="radioBtn" onclick="toggleRadio()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+    <span id="radioLabel">رادیو</span>
+  </button>
+</div>
+
+<div class="stage" id="stage"></div>
+
+<div class="bottom" id="bottomBar">
+  <button class="action-btn" id="likeBtn" onclick="toggleLike()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    <span>لایک</span>
+  </button>
+  <button class="action-btn" onclick="shareAsImage()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+    <span>ارسال</span>
+  </button>
+  <button class="action-btn" onclick="saveAsImage()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    <span>ذخیره</span>
+  </button>
+  <button class="action-btn" onclick="copyText()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    <span>کپی</span>
+  </button>
+</div>
+
+<div class="modal" id="settingsModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title">موضوعات</div>
+      <button class="modal-close" onclick="closeSettings()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body" id="priorityList"></div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeSettings()">انصراف</button>
+      <button class="btn-primary" onclick="saveSettings()">ذخیره</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+//  ⚙️ تنظیمات AI — توکن خودت را اینجا بگذار
+// ============================================================
+const AI_CONFIG = {
+  cfAccount: 'bc1c8e9b293605e6a30f2454f4073c26',
+  cfToken:   'cfut_l2j7U8RhyzRIxHNgdJ43sWdR0dQyGQ6xbU3hUQQje7378c27',   // ← توکن Cloudflare (اختیاری)
+  cfModel:   '@cf/meta/llama-3.3-70b-instruct-fp8-fast',
+  usePollinations: true,   // پشتیبان بدون کلید
+  perCategory: 3
+};
+// ============================================================
+
+// ============================================================
+//  📚 جمله‌های داخلی (همیشه کار می‌کند)
+// ============================================================
+const EMBEDDED_SLIDES = [
+  {"cat":"شخصی","text":"تنها چیزی که وقتی همه‌چیز را از دست می‌دهی برایت می‌ماند، کسی است که وقتی داشت، دستت را نگه داشت — نه کسی که وقتی نداشتی، رهایت کرد."},
+  {"cat":"شخصی","text":"گاهی بزرگ‌ترین شجاعت این نیست که بمانی؛ این است که بپذیری بعضی درها را باید خودت ببندی."},
+  {"cat":"شخصی","text":"آن‌قدر به «بعداً» عادت کرده‌ایم که یادمان رفته «حالا» تنها زمانی است که واقعاً داریمش."},
+  {"cat":"شخصی","text":"آدم‌ها را با لحظه‌های خوبشان قضاوت نکن؛ با کاری که در لحظه‌های سخت انجام می‌دهند بشناس."},
+  {"cat":"کاری","text":"کسی که همیشه «بله» می‌گوید، به‌زودی یاد می‌گیرد که ارزش «نه» را نخواهد فهمید."},
+  {"cat":"کاری","text":"حرفه‌ای‌گری یعنی وقتی کسی پشت سرت نیست، همان‌طور کار کنی که وقتی همه نگاه می‌کنند."},
+  {"cat":"کاری","text":"بزرگ‌ترین اشتباه در کار، اشتباه نکردن نیست؛ تکرار نکردن اشتباهی است که یک بار فهمیدی."},
+  {"cat":"رفاقت","text":"رفیق کسی نیست که وقتی خوشحالی کنارت است؛ رفیق کسی است که وقتی داری می‌شکنی، بدون اینکه بپرسد چرا، کنارت می‌ماند."},
+  {"cat":"رفاقت","text":"آدم‌ها را در سختی بشناس؛ چون در راحتی، همه بلدند چطور رفیق باشند."},
+  {"cat":"رفاقت","text":"رفاقت واقعی یعنی بتوانی ساکت بنشینی و هیچ‌کس احساس نکند باید چیزی بگوید."},
+  {"cat":"عشق","text":"عشق واقعی این نیست که کسی را داشته باشی؛ این است که بتوانی او را بدون داشتنش خوشحال ببینی."},
+  {"cat":"عشق","text":"دل که بشکند، جای شکستنش با عشق بعدی پر نمی‌شود. با زمانی که به خودت می‌دهی پر می‌شود."},
+  {"cat":"عشق","text":"کسی که تو را همان‌طور که هستی دوست دارد، از کسی که می‌خواهد تو را تغییر دهد ارزشمندتر است."},
+  {"cat":"جامعه","text":"جامعه‌ای که در آن سکوت امن‌ترین راه باشد، به‌زودی صداهای واقعی‌اش را از دست می‌دهد."},
+  {"cat":"جامعه","text":"قانون وقتی معنا دارد که برای همه یکسان باشد؛ وگرنه فقط یک توصیه است."},
+  {"cat":"جامعه","text":"بزرگ‌ترین مشکل جامعه این نیست که آدم‌های بد زیادند؛ این است که آدم‌های خوب ساکت‌اند."},
+  {"cat":"عمیق","text":"زندگی کوتاه نیست؛ ما آن را کوتاه می‌کنیم. با ترسیدن از چیزهایی که هرگز اتفاق نمی‌افتند."},
+  {"cat":"عمیق","text":"معنی زندگی شاید این باشد که چیزی را که فقط تو می‌توانی، به دنیا اضافه کنی."},
+  {"cat":"عمیق","text":"زمان همه زخم‌ها را درمان نمی‌کند. فقط به ما یاد می‌دهد چطور با آن‌ها زندگی کنیم."},
+  {"cat":"موفقیت","text":"موفقیت یعنی بلند شدن یک بار بیشتر از تعداد زمین خوردن‌ها."},
+  {"cat":"موفقیت","text":"رشد همیشه در ناراحتی است. راحتی، دشمن رشد است."},
+  {"cat":"موفقیت","text":"مهم نیست چقدر کند می‌روی، مهم این است که متوقف نشوی."},
+  {"cat":"خانواده","text":"خانواده جایی است که وقتی هیچ جای دیگری نداری، هنوز می‌توانی برگردی."},
+  {"cat":"خانواده","text":"پدر و مادرت را وقتی داری دریاب، نه وقتی که فقط عکسشان برایت مانده."},
+  {"cat":"خانواده","text":"در خانه، منطق برنده نیست؛ مهربانی برنده است."},
+  {"cat":"مالی","text":"پول بهترین خدمتکار است و بدترین ارباب."},
+  {"cat":"مالی","text":"سرمایه‌گذاری روی خودت همیشه بیشترین سود را دارد."},
+  {"cat":"مالی","text":"فقر مالی، از فقر فکری می‌آید. اول ذهن را ثروتمند کن."},
+  {"cat":"طنز","text":"من ورزش می‌کنم. هر روز صبح، ۱۰ متر از تخت تا یخچال. 🏃"},
+  {"cat":"طنز","text":"مغز من یک مرورگر با ۴۷ تب باز است و یک ویدیوی در حال پخش که نمی‌دانم کجاست. 🧠"},
+  {"cat":"طنز","text":"همیشه می‌گویم از فردا. ولی امروز فهمیدم ۱۴۷ تا فردا گذشته. 📅"},
+  {"cat":"طنز","text":"رژیم من: از امروز. نه، از شنبه. نه، از اول ماه. نه، از سال جدید. خب، سال بعد. 🍕"},
+  {"cat":"طنز","text":"خواب مثل شارژر است. من ۱۰۰٪ شارژ می‌خوابم، ۲٪ بیدار می‌شوم. 🔋"}
+];
+
+const CAT_META = {
+  'شخصی':{emoji:'💭',c1:'#ec4899',c2:'#f43f5e'},
+  'کاری':{emoji:'💼',c1:'#3b82f6',c2:'#06b6d4'},
+  'رفاقت':{emoji:'🤝',c1:'#10b981',c2:'#84cc16'},
+  'عشق':{emoji:'💗',c1:'#f43f5e',c2:'#ec4899'},
+  'جامعه':{emoji:'🌍',c1:'#f97316',c2:'#eab308'},
+  'عمیق':{emoji:'🌌',c1:'#a855f7',c2:'#ec4899'},
+  'موفقیت':{emoji:'🏆',c1:'#06b6d4',c2:'#3b82f6'},
+  'خانواده':{emoji:'🏠',c1:'#f43f5e',c2:'#ec4899'},
+  'مالی':{emoji:'💰',c1:'#eab308',c2:'#f97316'},
+  'طنز':{emoji:'😂',c1:'#84cc16',c2:'#10b981'},
+};
+
+// شروع با داده‌های داخلی — دیگر هیچ‌وقت خالی نیست
+let allSlides = [...EMBEDDED_SLIDES];
+let priorities = loadPriorities();
+let shuffleMode = JSON.parse(localStorage.getItem('jarre_shuffle') || 'false');
+let deck = [];
+let idx = 0;
+let curCat = 'همه';
+let likes = JSON.parse(localStorage.getItem('jarre_likes') || '{}');
+let touchStartY = 0;
+let generating = false;
+
+// TTS
+let radioActive = false;
+let radioToken = 0;
+let ttsVoice = null;
+let currentAudio = null;
+const ttsRate = 0.95;
+
+const el = {
+  stage: document.getElementById('stage'),
+  prog: document.getElementById('progressRow'),
+  strip: document.getElementById('catStrip'),
+  bottom: document.getElementById('bottomBar'),
+  likeBtn: document.getElementById('likeBtn'),
+  toast: document.getElementById('toast'),
+  settingsModal: document.getElementById('settingsModal'),
+  priorityList: document.getElementById('priorityList'),
+  shuffleBtn: document.getElementById('shuffleBtn'),
+  radioBtn: document.getElementById('radioBtn'),
+  radioLabel: document.getElementById('radioLabel'),
+};
+
+// Particles
+(function(){
+  const c = document.getElementById('particles');
+  for (let i = 0; i < 15; i++){
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDelay = Math.random() * 12 + 's';
+    p.style.animationDuration = (10 + Math.random() * 8) + 's';
+    c.appendChild(p);
+  }
+})();
+
+function loadPriorities(){
+  let p = null;
+  try { p = JSON.parse(localStorage.getItem('jarre_priorities') || 'null'); } catch(e){}
+  if (!p || !Array.isArray(p) || !p.length){
+    p = Object.keys(CAT_META).map((name, i) => ({name, enabled: true, order: i}));
+  }
+  // حذف موضوعات قدیمی، اضافه کردن جدید
+  const known = new Set(p.map(x => x.name));
+  Object.keys(CAT_META).forEach((name, i) => {
+    if (!known.has(name)) p.push({name, enabled: true, order: 100 + i});
+  });
+  return p;
+}
+function savePriorities(){ localStorage.setItem('jarre_priorities', JSON.stringify(priorities)); }
+function openSettings(){ renderPriorityList(); el.settingsModal.classList.add('show'); }
+function closeSettings(){ el.settingsModal.classList.remove('show'); }
+function renderPriorityList(){
+  const list = el.priorityList;
+  list.innerHTML = '';
+  priorities.sort((a,b) => a.order - b.order);
+  priorities.forEach((p, i) => {
+    const meta = CAT_META[p.name] || {emoji:'•'};
+    const row = document.createElement('div');
+    row.className = 'priority-row' + (p.enabled ? '' : ' off');
+    row.innerHTML = `
+      <div class="pr-emoji">${meta.emoji}</div>
+      <div class="pr-name">${p.name}</div>
+      <button class="pr-toggle ${p.enabled?'on':''}" onclick="togglePriority(${i})"></button>
+      <div class="pr-arrows">
+        <button class="pr-arrow" onclick="movePriority(${i}, -1)">▲</button>
+        <button class="pr-arrow" onclick="movePriority(${i}, 1)">▼</button>
+      </div>`;
+    list.appendChild(row);
+  });
+}
+function togglePriority(i){ priorities[i].enabled = !priorities[i].enabled; renderPriorityList(); }
+function movePriority(i, dir){
+  const j = i + dir;
+  if (j < 0 || j >= priorities.length) return;
+  const tmp = priorities[i].order;
+  priorities[i].order = priorities[j].order;
+  priorities[j].order = tmp;
+  renderPriorityList();
+}
+function saveSettings(){
+  savePriorities();
+  closeSettings();
+  buildDeck();
+  renderSlides();
+  toast('✅ ذخیره شد');
+}
+
+function buildDeck(){
+  const enabled = priorities.filter(p => p.enabled).map(p => p.name);
+  if (!enabled.length){ deck = []; return; }
+  let pool = allSlides.filter(s => enabled.includes(s.cat));
+  if (curCat !== 'همه') pool = pool.filter(s => s.cat === curCat);
+  if (shuffleMode){
+    deck = shuffle([...pool]);
+  } else {
+    const groups = {};
+    pool.forEach(s => { (groups[s.cat] = groups[s.cat] || []).push(s); });
+    deck = [];
+    priorities.filter(p => p.enabled).sort((a,b) => a.order - b.order).forEach(p => {
+      if (groups[p.name]) deck.push(...shuffle(groups[p.name]));
+    });
+  }
+  idx = 0;
+}
+function shuffle(arr){
+  for (let i = arr.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function renderSlides(){
+  el.stage.innerHTML = '';
+  el.prog.innerHTML = '';
+  if (!deck.length){
+    el.stage.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)">موضوعی فعال نیست<br><span style="font-size:11px">از ⚙️ روشن کن</span></div>';
+    return;
+  }
+  renderCategoryStrip();
+  deck.forEach((s, i) => {
+    const seg = document.createElement('div');
+    seg.className = 'p-seg';
+    const fill = document.createElement('div');
+    fill.className = 'p-fill';
+    seg.appendChild(fill);
+    el.prog.appendChild(seg);
+    const meta = CAT_META[s.cat] || {emoji:'•'};
+    const slide = document.createElement('div');
+    slide.className = 'slide' + (i === idx ? ' on' : '');
+    slide.dataset.cat = s.cat;
+    slide.innerHTML = `
+      <div class="slide-glow"></div>
+      <div class="slide-inner">
+        <div class="cat-chip">${meta.emoji} ${s.cat}</div>
+        <div class="slide-text">${escapeHtml(s.text)}</div>
+      </div>
+      <div class="slide-num">${toFa(i+1)} / ${toFa(deck.length)}</div>
+      <div class="watermark">— جرعه —</div>`;
+    el.stage.appendChild(slide);
+  });
+  const pz = document.createElement('button');
+  pz.className = 'tap-zone tap-prev';
+  pz.onclick = () => go(idx - 1);
+  el.stage.appendChild(pz);
+  const nz = document.createElement('button');
+  nz.className = 'tap-zone tap-next';
+  nz.onclick = () => go(idx + 1);
+  el.stage.appendChild(nz);
+  updateProgress();
+  updateLike();
+  updateCssColors();
+}
+
+function renderCategoryStrip(){
+  el.strip.innerHTML = '';
+  const all = document.createElement('button');
+  all.className = 'cat-pill' + (curCat === 'همه' ? ' active' : '');
+  all.innerHTML = '✨ همه';
+  all.style.setProperty('--c1', '#ec4899');
+  all.style.setProperty('--c2', '#f97316');
+  all.onclick = () => { curCat = 'همه'; buildDeck(); renderSlides(); };
+  el.strip.appendChild(all);
+  priorities.filter(p => p.enabled).forEach(p => {
+    const meta = CAT_META[p.name] || {emoji:'•'};
+    const pill = document.createElement('button');
+    pill.className = 'cat-pill' + (curCat === p.name ? ' active' : '');
+    pill.innerHTML = `${meta.emoji} ${p.name}`;
+    pill.style.setProperty('--c1', meta.c1 || '#ec4899');
+    pill.style.setProperty('--c2', meta.c2 || '#f97316');
+    pill.onclick = () => { curCat = p.name; buildDeck(); renderSlides(); };
+    el.strip.appendChild(pill);
+  });
+}
+
+function updateCssColors(){
+  const s = deck[idx];
+  if (!s) return;
+  const meta = CAT_META[s.cat] || {};
+  document.documentElement.style.setProperty('--c1', meta.c1 || '#ec4899');
+  document.documentElement.style.setProperty('--c2', meta.c2 || '#f97316');
+}
+
+function updateProgress(){
+  const fills = el.prog.querySelectorAll('.p-fill');
+  fills.forEach((f, i) => {
+    f.classList.remove('done', 'cur');
+    f.style.width = i < idx ? '100%' : '0';
+    if (i < idx) f.classList.add('done');
+    else if (i === idx) f.classList.add('cur');
+  });
+}
+
+function go(n){
+  if (!deck.length) return;
+  if (n >= deck.length){ triggerNewContent(); return; }
+  if (n < 0) n = 0;
+  idx = n;
+  document.querySelectorAll('.slide').forEach((s, i) => s.classList.toggle('on', i === idx));
+  updateProgress();
+  updateLike();
+  updateCssColors();
+  if (radioActive){ radioToken++; setTimeout(() => { if (radioActive) radioPlay(); }, 100); }
+}
+
+// ============ AI: جمله‌های تازه ============
+async function triggerNewContent(){
+  if (generating) return;
+  generating = true;
+  showGen();
+  try { await fetchFreshFromAI(); } catch(e){ console.warn(e); }
+  hideGen();
+  generating = false;
+  // reload deck with new content
+  buildDeck();
+  renderSlides();
+  if (deck.length) toast('✨ جمله‌های تازه آمد');
+}
+
+async function fetchFreshFromAI(){
+  const enabled = priorities.filter(p => p.enabled).map(p => p.name);
+  if (!enabled.length) return;
+  const pick = shuffle([...enabled]).slice(0, 2);
+  const existing = new Set(allSlides.map(s => s.text));
+  for (const cat of pick){
+    const items = await fetchCategory(cat);
+    items.forEach(t => {
+      if (!existing.has(t)){
+        allSlides.push({cat, text: t});
+        existing.add(t);
+      }
+    });
+  }
+}
+
+async function fetchCategory(cat){
+  const style = cat === 'طنز' ? 'بامزه و طنز' : 'سنگین و تأمل‌برانگیز';
+  const prompt = `دقیقاً ${AI_CONFIG.perCategory} جمله کوتاه فارسی درباره «${cat}» بنویس. لحن: ${style}. هر جمله حداکثر ۲۵ کلمه. فقط آرایه JSON: ["...","...","..."]`;
+  // 1. Cloudflare مستقیم
+  if (AI_CONFIG.cfToken){
+    try {
+      const url = `https://api.cloudflare.com/client/v4/accounts/${AI_CONFIG.cfAccount}/ai/run/${AI_CONFIG.cfModel}`;
+      const r = await fetch(url, {
+        method:'POST',
+        headers:{'Authorization':'Bearer '+AI_CONFIG.cfToken,'Content-Type':'application/json'},
+        body: JSON.stringify({messages:[
+          {role:'system',content:'فقط آرایه JSON خالص بده.'},
+          {role:'user',content:prompt}
+        ]})
+      });
+      if (r.ok){
+        const d = await r.json();
+        const txt = d.result?.response || d.result?.choices?.[0]?.message?.content || '';
+        const arr = parseArr(txt);
+        if (arr.length) return arr;
+      }
+    } catch(e){ console.warn('CF:', e.message); }
+  }
+  // 2. Pollinations
+  if (AI_CONFIG.usePollinations){
+    try {
+      const r = await fetch('https://text.pollinations.ai/' + encodeURIComponent(prompt) + '?model=openai');
+      if (r.ok){
+        const txt = await r.text();
+        const arr = parseArr(txt);
+        if (arr.length) return arr;
+      }
+    } catch(e){ console.warn('Poll:', e.message); }
+  }
+  return [];
+}
+
+function parseArr(txt){
+  if (!txt) return [];
+  txt = String(txt).replace(/```json/gi,'').replace(/```/g,'').trim();
+  const s = txt.indexOf('['), e = txt.lastIndexOf(']');
+  if (s === -1 || e === -1) return [];
+  try {
+    const arr = JSON.parse(txt.slice(s, e+1));
+    return Array.isArray(arr) ? arr.filter(x => typeof x === 'string' && x.length > 5 && x.length < 250).slice(0,5) : [];
+  } catch(e){ return []; }
+}
+
+function showGen(){
+  const ov = document.createElement('div');
+  ov.id = 'genOv';
+  ov.style.cssText = 'position:fixed;inset:0;z-index:150;background:rgba(5,5,16,.94);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;text-align:center;padding:40px';
+  ov.innerHTML = `
+    <div style="width:48px;height:48px;border:3px solid rgba(236,72,153,.15);border-top-color:#ec4899;border-radius:50%;animation:spin .8s linear infinite"></div>
+    <div style="font-size:16px;font-weight:700;background:linear-gradient(90deg,#ec4899,#f97316);-webkit-background-clip:text;background-clip:text;color:transparent">✨ در حال ساخت جمله‌های تازه</div>
+    <div style="font-size:12px;color:#8b8b95;max-width:260px;line-height:1.7">هوش مصنوعی دارد برایت جمله می‌نویسد...</div>`;
+  document.body.appendChild(ov);
+}
+function hideGen(){ const ov = document.getElementById('genOv'); if (ov) ov.remove(); }
+
+// ============ Like ============
+function currentKey(){ const s = deck[idx]; return s ? s.cat+'::'+s.text.slice(0,40) : ''; }
+function toggleLike(){
+  const k = currentKey(); if (!k) return;
+  likes[k] = !likes[k];
+  localStorage.setItem('jarre_likes', JSON.stringify(likes));
+  updateLike();
+  toast(likes[k] ? '❤️ ذخیره شد' : 'حذف شد');
+}
+function updateLike(){ el.likeBtn.classList.toggle('liked', !!likes[currentKey()]); }
+
+// ============ Copy ============
+function copyText(){
+  const s = deck[idx]; if (!s) return;
+  const t = `«${s.text}»\n\n— جرعه | ${s.cat}`;
+  if (navigator.clipboard) navigator.clipboard.writeText(t).then(()=>toast('📋 کپی شد')).catch(()=>fallbackCopy(t));
+  else fallbackCopy(t);
+}
+function fallbackCopy(t){
+  const ta = document.createElement('textarea'); ta.value = t;
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); toast('📋 کپی شد'); } catch(e){}
+  document.body.removeChild(ta);
+}
+
+// ============ Share/Save as Image ============
+async function captureSlide(){
+  const slide = document.querySelector('.slide.on');
+  if (!slide) return null;
+  return await html2canvas(slide, {backgroundColor:'#050510', scale:2, useCORS:true, logging:false});
+}
+async function shareAsImage(){
+  toast('📸 در حال ساخت عکس...');
+  try {
+    const canvas = await captureSlide();
+    canvas.toBlob(async (blob) => {
+      const file = new File([blob], 'jarre.png', {type:'image/png'});
+      if (navigator.canShare && navigator.canShare({files:[file]})){
+        try { await navigator.share({files:[file], title:'جرعه'}); return; } catch(e){}
+      }
+      downloadBlob(blob);
+    }, 'image/png');
+  } catch(e){ toast('خطا'); }
+}
+async function saveAsImage(){
+  toast('💾 در حال ذخیره...');
+  try {
+    const canvas = await captureSlide();
+    canvas.toBlob((blob) => { downloadBlob(blob); toast('✅ در گالری ذخیره شد'); }, 'image/png');
+  } catch(e){ toast('خطا'); }
+}
+function downloadBlob(blob){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'jarre-' + Date.now() + '.png';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+// ============ Fullscreen ============
+function toggleFullscreen(){
+  if (!document.fullscreenElement){
+    document.documentElement.requestFullscreen?.().catch(() => {});
+    document.getElementById('fullBtn').classList.add('active');
+  } else {
+    document.exitFullscreen?.();
+    document.getElementById('fullBtn').classList.remove('active');
+  }
+}
+document.addEventListener('fullscreenchange', () => {
+  document.getElementById('fullBtn').classList.toggle('active', !!document.fullscreenElement);
+});
+
+// ============ Shuffle ============
+function toggleShuffle(){
+  shuffleMode = !shuffleMode;
+  localStorage.setItem('jarre_shuffle', JSON.stringify(shuffleMode));
+  updateShuffleBtn();
+  buildDeck();
+  renderSlides();
+  toast(shuffleMode ? '🔀 درهم' : '📋 مرتب');
+}
+function updateShuffleBtn(){ el.shuffleBtn.classList.toggle('on', shuffleMode); }
+
+// ============ TTS ============
+function initTTS(){
+  if (!('speechSynthesis' in window)) return;
+  const load = () => {
+    const voices = speechSynthesis.getVoices();
+    ttsVoice = voices.find(v => v.lang === 'fa-IR')
+            || voices.find(v => v.lang && v.lang.toLowerCase().startsWith('fa'))
+            || null;
+  };
+  load();
+  speechSynthesis.onvoiceschanged = load;
+}
+initTTS();
+
+function toggleRadio(){ radioActive ? stopRadio() : startRadio(); }
+function startRadio(){
+  radioActive = true; radioToken++;
+  el.radioBtn.classList.add('on');
+  el.radioLabel.textContent = 'توقف';
+  toast('🔊 رادیو روشن');
+  radioPlay();
+}
+function stopRadio(){
+  radioActive = false; radioToken++;
+  el.radioBtn.classList.remove('on');
+  el.radioLabel.textContent = 'رادیو';
+  if ('speechSynthesis' in window) speechSynthesis.cancel();
+  if (currentAudio){ currentAudio.pause(); currentAudio = null; }
+}
+async function radioPlay(){
+  if (!radioActive) return;
+  const myToken = ++radioToken;
+  const s = deck[idx];
+  if (!s){ stopRadio(); return; }
+  try { await speakText(s.text); } catch(e){}
+  if (myToken !== radioToken || !radioActive) return;
+  await new Promise(r => setTimeout(r, 800));
+  if (myToken !== radioToken || !radioActive) return;
+  if (idx + 1 < deck.length){
+    idx++;
+    document.querySelectorAll('.slide').forEach((sl, i) => sl.classList.toggle('on', i === idx));
+    updateProgress(); updateLike(); updateCssColors();
+    radioPlay();
+  } else {
+    await triggerNewContent();
+    if (radioActive && idx + 1 < deck.length){ idx++; go(idx); radioPlay(); }
+    else stopRadio();
+  }
+}
+async function speakText(text){
+  if ('speechSynthesis' in window && ttsVoice){
+    return new Promise(resolve => {
+      const u = new SpeechSynthesisUtterance(text);
+      u.voice = ttsVoice; u.lang = 'fa-IR'; u.rate = ttsRate;
+      u.onend = resolve; u.onerror = resolve;
+      speechSynthesis.speak(u);
+    });
+  }
+  const chunks = splitTTS(text, 160);
+  for (const chunk of chunks){
+    if (!radioActive) break;
+    await playTTSChunk(chunk);
+  }
+}
+function splitTTS(text, max){
+  const sents = text.split(/(?<=[.!?؟])\s+/);
+  const chunks = []; let cur = '';
+  for (const s of sents){
+    if ((cur + ' ' + s).length <= max){ cur = (cur ? cur + ' ' : '') + s; }
+    else {
+      if (cur) chunks.push(cur);
+      if (s.length <= max) cur = s;
+      else { let rest = s; while (rest.length > max){ chunks.push(rest.slice(0, max)); rest = rest.slice(max); } cur = rest; }
+    }
+  }
+  if (cur) chunks.push(cur);
+  return chunks;
+}
+function playTTSChunk(text){
+  return new Promise(resolve => {
+    const q = encodeURIComponent(text);
+    const urls = [
+      `https://translate.googleapis.com/translate_tts?ie=UTF-8&q=${q}&tl=fa&client=gtx`,
+      `https://translate.google.com/translate_tts?ie=UTF-8&q=${q}&tl=fa&client=tw-ob`,
+    ];
+    let tried = 0;
+    const tryPlay = () => {
+      if (tried >= urls.length){ resolve(); return; }
+      const audio = new Audio(urls[tried++]);
+      currentAudio = audio;
+      let done = false;
+      const fin = () => { if (!done){ done = true; currentAudio = null; resolve(); } };
+      audio.onended = fin;
+      audio.onerror = () => { fin(); tryPlay(); };
+      audio.play().catch(() => { fin(); tryPlay(); });
+      setTimeout(() => { if (!done){ try { audio.pause(); } catch(e){} fin(); } }, 15000);
+    };
+    tryPlay();
+  });
+}
+
+// Touch
+el.stage.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, {passive:true});
+el.stage.addEventListener('touchend', e => {
+  const dy = e.changedTouches[0].clientY - touchStartY;
+  if (Math.abs(dy) > 45){ if (dy < 0) go(idx + 1); else go(idx - 1); }
+}, {passive:true});
+document.addEventListener('keydown', e => {
+  if (e.code === 'ArrowRight') go(idx + 1);
+  if (e.code === 'ArrowLeft') go(idx - 1);
+  if (e.code === 'Space'){ e.preventDefault(); toggleRadio(); }
+});
+
+function escapeHtml(t){ const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+function toFa(n){ return String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
+function toast(m){
+  el.toast.textContent = m;
+  el.toast.classList.add('show');
+  clearTimeout(el.toast._tid);
+  el.toast._tid = setTimeout(() => el.toast.classList.remove('show'), 2600);
+}
+
+// Init — با داده داخلی، حتی بدون content.json
+updateShuffleBtn();
+buildDeck();
+renderSlides();
+
+// حالا تلاش کن content.json را هم بیاور (اگر بود، اضافه کن)
+fetch('content.json?t=' + Date.now(), {cache:'no-store'})
+  .then(r => r.ok ? r.json() : null)
+  .then(data => {
+    if (data && data.slides && data.slides.length){
+      const existing = new Set(allSlides.map(s => s.text));
+      let added = 0;
+      data.slides.forEach(s => {
+        if (s.cat && s.text && !existing.has(s.text)){
+          allSlides.push(s);
+          existing.add(s.text);
+          added++;
+        }
+      });
+      if (added > 0){
+        buildDeck();
+        renderSlides();
+      }
+    }
+  })
+  .catch(() => {});
+</script>
+</body>
+</html>
